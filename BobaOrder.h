@@ -16,12 +16,9 @@ class BobaOrder : public DeliveryOrder
         ~BobaOrder();
 
         void receipt() const;
-        
+        float VIPdiscount() override;
+        void addDrink(std::string, bool, int);
 
 };
-
-
-
-
 
 #endif

@@ -25,9 +25,7 @@ class DeliveryOrder
         void receipt() const;
         float getTotalBalance() const;
         static int getOrderCount();
-        virtual void VIPdiscount() = 0;
+        virtual float VIPdiscount() = 0;
 };
-
-
 
 # endif

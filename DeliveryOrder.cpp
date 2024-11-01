@@ -42,4 +42,3 @@ int DeliveryOrder::getOrderCount()
 {
     return DeliveryOrder::orderCount;
 }
-
