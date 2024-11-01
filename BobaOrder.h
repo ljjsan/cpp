@@ -11,11 +11,16 @@ class BobaOrder : public DeliveryOrder
         std::string shopName;
         static int drinksCount;
 
-    
+    public:
+        BobaOrder(std::string, std::string, std::string, float, std::string);
+        ~BobaOrder();
 
-
+        void receipt() const;
+        
 
 };
+
+
 
 
 
