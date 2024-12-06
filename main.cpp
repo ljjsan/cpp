@@ -21,7 +21,6 @@
 ============================================================================== 
 */
 
-
 #include <iostream>
 #include <iomanip>
 
@@ -29,17 +28,18 @@
 #include "BobaOrder.h"
 #include "FoodOrder.h"
 #include "Account.h"
+#include "InvalidInput.h"
 
 
 // Check account status and apply the corresponding discount
-float applyDiscount(DeliveryOrder& deliveryOrder, const Account& account)
+float applyDiscount(DeliveryOrder* deliveryOrder, const Account& account)
 {
     if (account.getStatus() == "Owner")
-        return 0.1 * deliveryOrder.getTotalBalance();
+        return 0.1 * (*deliveryOrder).getTotalBalance();
     else if (account.getStatus() == "VIP")
-        return deliveryOrder.VIPdiscount() * deliveryOrder.getTotalBalance();
+        return (*deliveryOrder).VIPdiscount() * (*deliveryOrder).getTotalBalance();
     else
-        return deliveryOrder.getTotalBalance();
+        return (*deliveryOrder).getTotalBalance();
 }
 
 
@@ -53,47 +53,67 @@ int main()
     Account kevinAccount("Kevin", "VIP");
     Account bobAccount("Bob");
 
-    DeliveryOrder* deliveryOrder;   // Pointer to DeliveryOrder object
+    DeliveryOrder* deliveryOrder = nullptr;   // Pointer to DeliveryOrder object
 
-    // Kevin places a boba order
+    // Section: Kevin places a boba order
     std::cout << "Kevin is placing an order.\n";
     BobaOrder kevinDrinkOrder("Kevin", "04/20/2024", "123-456-0000", 10.4, "M Tea");
-    kevinDrinkOrder.addDrink("Green Tea Latte");
-    kevinDrinkOrder.addDrink("Brown Sugar Pearl Milk", false);
-    kevinDrinkOrder.addDrink("Brown Sugar Boba Milk", false, 2);
-    // kevinDrinkOrder.addDrink("Iron Goddess");
 
+    try
+    {
+        // Add drinks to Kevin's order
+        kevinDrinkOrder.addDrink("Green Tea Latte");
+        kevinDrinkOrder.addDrink("Brown Sugar Pearl Milk", false);
+        kevinDrinkOrder.addDrink("Brown Sugar Boba Milk", false, 2);
+        kevinDrinkOrder.addDrink("Iron Goddess");
+    }
+    catch(const InvalidInput & e)
+    {
+        e.reason();
+        std::cout << "Not serving requested drinks. Drink order ignored.\n\n";
+    }
+    
     // Print receipt and total balance for Kevin's order
     kevinDrinkOrder.receipt();
     std::cout << "Balance: $" << kevinDrinkOrder.getTotalBalance() << std::endl;
 
-    deliveryOrder = &kevinDrinkOrder;  // Point to the BobaOrder
-
-    // Apply discount and print discounted balance
-    std::cout << "Discounted Balance: $" << applyDiscount(*deliveryOrder, kevinAccount) << std::endl;
+    // Apply discount to Kevin's order and print the discounted balance
+    deliveryOrder = &kevinDrinkOrder;
+    std::cout << "Discounted Balance: $" << applyDiscount(deliveryOrder, kevinAccount) << std::endl;
     std::cout << "\n\n";
 
-    // Stuart places a food order
+    // Section: Stuart places a food order
     std::cout << "Stuart is placing order.\n";
     FoodOrder stuartFoodOrder("Stuart", "04/20/2024", "123-456-1111", 25.5, "Tavern Green");
-    stuartFoodOrder.addFood("Thick Cauliflower Steaks", 1, true);
-    stuartFoodOrder.addFood("Organic Scottish Salmon", 0, false);
-    stuartFoodOrder.addFood("Rack of Lamb", 0, true);
-    
+
+    try
+    {
+        // Add food items to Stuart's order
+        stuartFoodOrder.addFood("Thick Cauliflower Steaks", 1, true);
+        stuartFoodOrder.addFood("Organic Scottish Salmon", 0, false);
+        stuartFoodOrder.addFood("Rack of Lamb", 0, true);
+        //stuartFoodOrder.addFood("fda", 0, true);
+    }
+    catch(const InvalidInput & e)
+    {
+      e.reason();
+      std::cout << "Not serving requested food. Food order ignored.\n\n";
+    }
+      
     // Print receipt and total balance for Stuart's order
     stuartFoodOrder.receipt();
     std::cout << "Balance: $" << stuartFoodOrder.getTotalBalance() << std::endl;
 
-    deliveryOrder = &stuartFoodOrder;   // Point to the FoodOrder
-    // Apply discount and print discounted balance
-    std::cout << "Discounted Balance: $" << applyDiscount(*deliveryOrder, stuartAccount) << std::endl;
+    // Apply discount to Stuart's order and print the discounted balance
+    deliveryOrder = &stuartFoodOrder;
+    std::cout << "Discounted Balance: $" << applyDiscount(deliveryOrder, stuartAccount) << std::endl;
     std::cout << "\n\n";
 
-    // Bob checks his ability to order the same items as Stuart
+    // Section: Bob checks his ability to order the same items as Stuart
     std::cout << "Bob decided to log in to his account and see whether he can afford ordering the same order as Stuart.\n";
     stuartFoodOrder.receipt();
     std::cout << "Balance: $" << stuartFoodOrder.getTotalBalance() << std::endl;
-    std::cout << "Discounted Balance: $" << applyDiscount(*deliveryOrder, bobAccount) << std::endl;
+    std::cout << "Discounted Balance: $" << applyDiscount(deliveryOrder, bobAccount) << std::endl;
     std::cout << "Bob upset, cancelling order :(\n\n";
 
     // Display total number of orders placed

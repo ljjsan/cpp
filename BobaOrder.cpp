@@ -17,6 +17,7 @@
 */
 
 #include "BobaOrder.h"
+#include "InvalidInput.h"
 
 // Static variable to track the total number of drinks ordered
 int BobaOrder::drinksCount = 0;
@@ -63,8 +64,9 @@ void BobaOrder::addDrink(std::string drinkName, bool isAddBoba, int sameDrinkCou
 
     // Set the price based on the drink name
     if (drinkName == "Green Tea Latte") price = 5.8;
-    if (drinkName == "Brown Sugar Boba Milk") price = 7.8;
-    if (drinkName == "Brown Sugar Pearl Milk") price = 9.8;
+    else if (drinkName == "Brown Sugar Boba Milk") price = 7.8;
+    else if (drinkName == "Brown Sugar Pearl Milk") price = 9.8;
+    else throw InvalidInput(drinkName);
 
     // Calculate the cost based on whether boba is added
     if (isAddBoba) cost = (price + 1) * sameDrinkCount;

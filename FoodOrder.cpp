@@ -20,6 +20,7 @@
 
 // Static variable to keep track of the total number of food items ordered
 #include "FoodOrder.h"
+#include "InvalidInput.h"
 
 int FoodOrder::foodCount = 0;
 
@@ -70,7 +71,7 @@ void FoodOrder::addFood(std::string mealName, int sides = 0, bool isAddSoup = fa
     else if (mealName == "Rack of Lamb") price = 38;
     else if (mealName == "Organic Scottish Salmon") price = 23;
     else if (mealName == "Grilled Lobster Risotto") price = 46;
-    else {}
+    else throw InvalidInput(mealName);
 
     // Calculate the cost based on whether soup is added
     if (isAddSoup) cost = price + sides * 6 + 5;

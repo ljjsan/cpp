@@ -10,25 +10,15 @@ class InvalidInput
 {
     private:
         std::string input;
-        const std::string message = "Invalid input \"" + input + "\".\n";
+        const std::string message;
         
 
     public:
-        InvalidInput(/* args */);
-        ~InvalidInput();
+        InvalidInput(std::string input) : message("Invalid input \"" + input + "\".\n")
+        {};
+
+        void reason() const {std::cout << message;}
+
 };
-
-InvalidInput::InvalidInput(/* args */)
-{
-}
-
-InvalidInput::~InvalidInput()
-{
-}
-
-
-
-
-
 
 #endif
